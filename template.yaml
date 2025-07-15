@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Finance Tracker API
+
+  This template deploys a serverless finance tracker application using API Gateway,
+  Lambda, SQS, and Aurora PostgreSQL.
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Runtime: python3.9
+
+Resources:
+  FinanceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  CreateRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/records/
+      Handler: create.create_record_handler
+      Policies:
+        - SQSWritePolicy:
+            QueueName: !GetAtt RecordsQueue.QueueName
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref RecordsQueue
+      Events:
+        CreateRecord:
+          Type: Api
+          Properties:
+            Path: /records
+            Method: post
+            RestApiId: !Ref FinanceApi
+
+  GetRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/records/
+      Handler: get.get_record_handler
+      Policies:
+        - VPCAccessPolicy: {}
+      Environment:
+        Variables:
+          DB_NAME: <YOUR_DB_NAME>
+          DB_USER: <YOUR_DB_USER>
+          DB_PASSWORD: <YOUR_DB_PASSWORD>
+          DB_HOST: <YOUR_DB_HOST>
+          DB_PORT: <YOUR_DB_PORT>
+      Events:
+        GetRecord:
+          Type: Api
+          Properties:
+            Path: /records/{record_id}
+            Method: get
+            RestApiId: !Ref FinanceApi
+
+  UpdateRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/records/
+      Handler: update.update_record_handler
+      Policies:
+        - VPCAccessPolicy: {}
+      Environment:
+        Variables:
+          DB_NAME: <YOUR_DB_NAME>
+          DB_USER: <YOUR_DB_USER>
+          DB_PASSWORD: <YOUR_DB_PASSWORD>
+          DB_HOST: <YOUR_DB_HOST>
+          DB_PORT: <YOUR_DB_PORT>
+      Events:
+        UpdateRecord:
+          Type: Api
+          Properties:
+            Path: /records/{record_id}
+            Method: put
+            RestApiId: !Ref FinanceApi
+
+  DeleteRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/records/
+      Handler: delete.delete_record_handler
+      Policies:
+        - VPCAccessPolicy: {}
+      Environment:
+        Variables:
+          DB_NAME: <YOUR_DB_NAME>
+          DB_USER: <YOUR_DB_USER>
+          DB_PASSWORD: <YOUR_DB_PASSWORD>
+          DB_HOST: <YOUR_DB_HOST>
+          DB_PORT: <YOUR_DB_PORT>
+      Events:
+        DeleteRecord:
+          Type: Api
+          Properties:
+            Path: /records/{record_id}
+            Method: delete
+            RestApiId: !Ref FinanceApi
+
+  DbWriterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/records/
+      Handler: db_writer.db_writer_handler
+      Policies:
+        - VPCAccessPolicy: {}
+      Environment:
+        Variables:
+          DB_NAME: <YOUR_DB_NAME>
+          DB_USER: <YOUR_DB_USER>
+          DB_PASSWORD: <YOUR_DB_PASSWORD>
+          DB_HOST: <YOUR_DB_HOST>
+          DB_PORT: <YOUR_DB_PORT>
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt RecordsQueue.Arn
+            BatchSize: 1
+
+  RecordsQueue:
+    Type: AWS::SQS::Queue
+
+Outputs:
+  FinanceApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage for Finance Tracker API"
+    Value: !Sub "https://${FinanceApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
