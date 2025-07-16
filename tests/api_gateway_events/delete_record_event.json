@@ -1,0 +1,22 @@
+{
+  "resource": "/records/{record_id}",
+  "path": "/records/123",
+  "httpMethod": "DELETE",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "record_id": "123"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourcePath": "/records/{record_id}",
+    "httpMethod": "DELETE",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    }
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

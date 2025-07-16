@@ -1,0 +1,23 @@
+{
+  "resource": "/records/{record_id}",
+  "path": "/records/123",
+  "httpMethod": "PUT",
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "record_id": "123"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourcePath": "/records/{record_id}",
+    "httpMethod": "PUT",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    }
+  },
+  "body": "{\"amount\": 150.00, \"category\": \"Utilities\", \"description\": \"Electricity bill\"}",
+  "isBase64Encoded": false
+}

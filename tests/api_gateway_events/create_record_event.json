@@ -1,0 +1,21 @@
+{
+  "resource": "/records",
+  "path": "/records",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourcePath": "/records",
+    "httpMethod": "POST",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    }
+  },
+  "body": "{\"amount\": 100.00, \"category\": \"Food\", \"description\": \"Groceries\"}",
+  "isBase64Encoded": false
+}
