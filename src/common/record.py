@@ -12,7 +12,8 @@ class Record:
         self.record_id = record_id
 
     def to_dict(self) -> Dict[str, Any]:
-        """Converts the Record object to a dictionary."""        return {
+        """Converts the Record object to a dictionary."""        
+        return {
             "record_id": self.record_id,
             "amount": self.amount,
             "description": self.description,
@@ -20,7 +21,8 @@ class Record:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Record":
-        """Creates a Record object from a dictionary."""        return cls(
+        """Creates a Record object from a dictionary."""        
+        return cls(
             amount=data.get("amount"),
             description=data.get("description"),
             record_id=data.get("record_id"),
